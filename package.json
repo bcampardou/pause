@@ -1,0 +1,50 @@
+{
+  "name": "pause",
+  "version": "1.0.0",
+  "description": "A minimal video reader",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "video",
+    "reader",
+    "mp4",
+    "avi"
+  ],
+  "author": "Béranger Campardou",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^2.0.0",
+    "electron-builder": "^20.15.1"
+  },
+  "dependencies": {
+    "video.js": "^7.0.3",
+    "videojs-contextmenu": "^2.0.0",
+    "videojs-playlist": "^4.2.0",
+    "videojs-playlist-ui": "^3.4.0"
+  },
+  "build": {
+    "appId": "com.electron.pause",
+    "productName": "Pause",
+    "mac": {
+      "category": "public.app-category.video",
+      "target": "dmg"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    }
+  }
+}

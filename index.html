@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Pause</title>
+  <link rel="stylesheet" type="text/css" href="./assets/video-js.min.css">
+  <link rel="stylesheet" type="text/css" href="./assets/videojs-playlist-ui.css">
+  <link rel="stylesheet" type="text/css" href="./assets/themify-icons.css">
+  <link rel="stylesheet" type="text/css" href="./assets/main.css">
+</head>
+
+<body>
+  <div class="header-bar">
+    <button class="close-btn"></button>
+    <button class="large-btn"></button>
+    <button class="minimize-btn"></button>
+    <span class="playlist-background"></span>
+  </div>
+  <div id="video-container">
+
+    <video id="player" class="video-js" controls="true">
+    </video>
+    <div id="playlist-container">
+      <div id="playlist" class="vjs-playlist"></div>
+      <div class="input-file-container">
+        <input class="input-file" type="file">
+        <label tabindex="0" for="my-file" class="input-file-trigger">
+          <i class="ti-import"></i>
+        </label>
+      </div>
+    </div>
+  </div>
+  <script>
+    require('./renderer.js')
+  </script>
+</body>
+
+</html>
