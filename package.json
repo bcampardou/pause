@@ -25,6 +25,7 @@
   "dependencies": {
     "video.js": "^7.0.3",
     "videojs-contextmenu": "^2.0.0",
+    "videojs-contextmenu-ui": "^4.0.0",
     "videojs-playlist": "^4.2.0",
     "videojs-playlist-ui": "^3.4.0"
   },

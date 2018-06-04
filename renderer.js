@@ -5,6 +5,7 @@
 const electron = require('electron');
 const videojs = require('video.js');
 const menu = require('videojs-contextmenu');
+const menuUi = require('videojs-contextmenu-ui');
 const playlist = require('videojs-playlist');
 const playlistUi = require('videojs-playlist-ui');
 
@@ -17,6 +18,7 @@ let initPlayer = function() {
     videojs.registerPlugin('playlistUi', playlistUi);
 
     videojs.registerPlugin('contextmenu', menu);
+    videojs.registerPlugin('contextmenuUI', menuUi);
 
     let Button = videojs.getComponent('Button');
     let PlaylistButton = videojs.extend(Button, {
@@ -42,6 +44,9 @@ let initPlayer = function() {
     player.playlist(playlistInfos);
     player.getChild('controlBar').addChild('PlaylistButton', {});
     player.contextmenu();
+    player.contextmenuUI({
+        content: []
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
