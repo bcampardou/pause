@@ -8,11 +8,12 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/baobabcoder/pause",
   "keywords": [
+    "Pause",
     "Electron",
     "video",
-    "reader",
+    "player",
     "mp4",
     "avi"
   ],
