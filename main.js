@@ -4,7 +4,7 @@ const {app, BrowserWindow, ipcMain} = require('electron')
 // read the file and send data to the render process
 ipcMain.on('get-file-data', function(event) {
   var data = null;
-  if (process.platform == 'win32' && process.argv.length >= 2) {
+  if (process.argv.length > 1) {
     var openFilePath = process.argv[1];
     if(openFilePath === '.') return event.returnValue = null;
     data = {
@@ -27,7 +27,6 @@ function createWindow () {
     height: 480, 
     transparent:true,
     frame:false,
-    titleBarStyle: 'hidden',
     icon: './build/icon.ico'
   })
 
