@@ -1,7 +1,7 @@
 {
   "name": "pause",
   "version": "1.0.0",
-  "description": "A minimal video reader",
+  "description": "A minimal video player",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -24,6 +24,7 @@
     "electron-builder": "^20.15.1"
   },
   "dependencies": {
+    "npm": "^6.1.0",
     "video.js": "^7.0.3",
     "videojs-contextmenu": "^2.0.0",
     "videojs-contextmenu-ui": "^4.0.0",
@@ -33,6 +34,68 @@
   "build": {
     "appId": "com.electron.pause",
     "productName": "Pause",
+    "fileAssociations": [
+      {
+        "ext": "mp4",
+        "name": "MPEG-4",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
+        "ext": "webm",
+        "name": "WebM",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
+        "ext": "flv",
+        "name": "Flash Video (FLV)",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
+        "ext": "flv",
+        "name": "F4V",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
+        "ext": "ogg",
+        "name": "Ogg Video",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
+        "ext": "ogv",
+        "name": "Ogg Video",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
+        "ext": "avi",
+        "name": "AVI",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
+        "ext": "mov",
+        "name": "QuickTime File Format",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
+        "ext": "3gp",
+        "name": "3GPP",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
+        "ext": "mxf",
+        "name": "Material Exchange Format",
+        "description": "",
+        "role": "Viewer"
+      }
+    ],
     "mac": {
       "category": "public.app-category.video",
       "target": "dmg"

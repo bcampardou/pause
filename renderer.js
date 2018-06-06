@@ -8,6 +8,7 @@ const menu = require('videojs-contextmenu');
 const menuUi = require('videojs-contextmenu-ui');
 const playlist = require('videojs-playlist');
 const playlistUi = require('videojs-playlist-ui');
+const fs = require('fs');
 
 let playlistInfos = []
 
@@ -41,6 +42,9 @@ let initPlayer = function() {
     });
     player.removeChild('BigPlayButton');
     player.playlistUi({ playOnSelect: true });
+    let data = electron.ipcRenderer.sendSync('get-file-data');
+    if(!!data) playlistInfos.push(data);
+    
     player.playlist(playlistInfos);
     player.getChild('controlBar').addChild('PlaylistButton', {});
     player.contextmenu();
@@ -81,5 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.querySelector('.minimize-btn').addEventListener('click', () => {
         electron.remote.getCurrentWindow().minimize();
+    });
+
+    document.querySelector('#alwaysOnTop').addEventListener('change', (event) => {
+        electron.remote
+                .getCurrentWindow()
+                .setAlwaysOnTop(event.srcElement.checked);
     });
 });
