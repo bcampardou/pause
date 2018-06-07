@@ -1,37 +1,47 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain } = require('electron')
-
-// read the file and send data to the render process
-ipcMain.on('get-file-data', function (event) {
-  var data = null;
-  if (process.argv.length > 1) {
-    for(let i = 1; i < process.argv.length; i++) {
-      var openFilePath = process.argv[i];
-      if (openFilePath === '.') continue;
-      event.returnValue = openFilePath.split('\\').join('/');
-      return;
-    }
-    event.returnValue = null;
-  }
-});
+const path = require('path')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let mainWindow,
+  ready = false
 
+
+var onOpenFile = function (event, link) {
+  if (!!event) event.preventDefault()
+
+  console.log('ready: ' + ready)
+  if (ready) {
+    mainWindow.webContents.send('file-received', link.split('\\').join('/'))
+    return
+  }
+}
+
+app.on('open-file', onOpenFile)
+app.on('open-url', onOpenFile)
 
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 720,
-    height: 480,
+    height: 410,
     transparent: true,
     frame: false,
+    show: false,
     icon: './build/icon.ico'
   })
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
+
+  mainWindow.once('ready-to-show', () => {
+    ready = true
+    process.argv.slice(2).forEach(function (arg) {
+      onOpenFile(null, arg.split('\\').join('/'))
+    })
+    mainWindow.show()
+  })
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -66,6 +76,3 @@ app.on('activate', function () {
     createWindow()
   }
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.

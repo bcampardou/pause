@@ -2,7 +2,8 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 
-const electron = require('electron');
+const remote = require('electron').remote;
+const ipcRenderer = require('electron').ipcRenderer;
 const videojs = require('video.js');
 const menu = require('videojs-contextmenu');
 const menuUi = require('videojs-contextmenu-ui');
@@ -10,9 +11,24 @@ const playlist = require('videojs-playlist');
 const playlistUi = require('videojs-playlist-ui');
 const mime = require('mime-types');
 
-let playlistInfos = []
+let playlistInfos = [];
 
 let player;
+
+ipcRenderer.on('file-received', function(event, path) {
+    if (!!path) {
+        let filename = path.split('/').pop();
+        playlistInfos.push({
+            name: filename,
+            sources: [
+                {
+                    src: 'file:///' + path,
+                    type: mime.lookup(filename)
+                }]
+        });
+        player.playlist(playlistInfos);
+    }
+});
 
 let initPlayer = function () {
     videojs.registerPlugin('playlist', playlist);
@@ -41,22 +57,11 @@ let initPlayer = function () {
         preload: true
     });
     player.removeChild('BigPlayButton');
-    player.playlistUi({ playOnSelect: true });
-    let path = electron.ipcRenderer.sendSync('get-file-data');
-    if (!!path) {
-        let filename = path.split('/').pop();
-        let data = {
-            name: filename,
-            sources: [
-                {
-                    src: 'file:///' + path,
-                    type: mime.lookup(filename)
-                }]
-        }
-        if (!!data) playlistInfos.push(data);
-    }
+    
+
 
     player.playlist(playlistInfos);
+    player.playlistUi({ playOnSelect: true });
     player.getChild('controlBar').addChild('PlaylistButton', {});
     player.contextmenu();
     player.contextmenuUI({
@@ -85,21 +90,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelector('.close-btn').addEventListener('click', () => {
-        electron.remote.app.exit();
+        remote.app.exit();
     });
 
     document.querySelector('.large-btn').addEventListener('click', () => {
         document.querySelector('body').classList.toggle('maximized');
-        let window = electron.remote.getCurrentWindow();
+        let window = remote.getCurrentWindow();
         window.isMaximized() ? window.unmaximize() : window.maximize();
     });
 
     document.querySelector('.minimize-btn').addEventListener('click', () => {
-        electron.remote.getCurrentWindow().minimize();
+        remote.getCurrentWindow().minimize();
     });
 
     document.querySelector('#alwaysOnTop').addEventListener('change', (event) => {
-        electron.remote
+        remote
             .getCurrentWindow()
             .setAlwaysOnTop(event.srcElement.checked);
     });
