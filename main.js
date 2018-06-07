@@ -1,18 +1,18 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, ipcMain} = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 
 // read the file and send data to the render process
-ipcMain.on('get-file-data', function(event) {
+ipcMain.on('get-file-data', function (event) {
   var data = null;
   if (process.argv.length > 1) {
-    var openFilePath = process.argv[1];
-    if(openFilePath === '.') return event.returnValue = null;
-    data = {
-      name: 'test',
-      sources: [{ src: 'file:///' + openFilePath.split('\\').join('/'), type: 'video/mp4' }]
+    for(let i = 1; i < process.argv.length; i++) {
+      var openFilePath = process.argv[i];
+      if (openFilePath === '.') continue;
+      event.returnValue = openFilePath.split('\\').join('/');
+      return;
     }
+    event.returnValue = null;
   }
-  event.returnValue = data;
 });
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -20,13 +20,13 @@ ipcMain.on('get-file-data', function(event) {
 let mainWindow
 
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 720, 
-    height: 480, 
-    transparent:true,
-    frame:false,
+    width: 720,
+    height: 480,
+    transparent: true,
+    frame: false,
     icon: './build/icon.ico'
   })
 

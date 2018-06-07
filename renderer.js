@@ -8,13 +8,13 @@ const menu = require('videojs-contextmenu');
 const menuUi = require('videojs-contextmenu-ui');
 const playlist = require('videojs-playlist');
 const playlistUi = require('videojs-playlist-ui');
-const fs = require('fs');
+const mime = require('mime-types');
 
 let playlistInfos = []
 
 let player;
 
-let initPlayer = function() {
+let initPlayer = function () {
     videojs.registerPlugin('playlist', playlist);
     videojs.registerPlugin('playlistUi', playlistUi);
 
@@ -37,14 +37,25 @@ let initPlayer = function() {
 
     player = videojs('player', {
         controls: true,
-        autoplay: false,
+        autoplay: true,
         preload: true
     });
     player.removeChild('BigPlayButton');
     player.playlistUi({ playOnSelect: true });
-    let data = electron.ipcRenderer.sendSync('get-file-data');
-    if(!!data) playlistInfos.push(data);
-    
+    let path = electron.ipcRenderer.sendSync('get-file-data');
+    if (!!path) {
+        let filename = path.split('/').pop();
+        let data = {
+            name: filename,
+            sources: [
+                {
+                    src: 'file:///' + path,
+                    type: mime.lookup(filename)
+                }]
+        }
+        if (!!data) playlistInfos.push(data);
+    }
+
     player.playlist(playlistInfos);
     player.getChild('controlBar').addChild('PlaylistButton', {});
     player.contextmenu();
@@ -76,20 +87,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.close-btn').addEventListener('click', () => {
         electron.remote.app.exit();
     });
-    
+
     document.querySelector('.large-btn').addEventListener('click', () => {
         document.querySelector('body').classList.toggle('maximized');
         let window = electron.remote.getCurrentWindow();
         window.isMaximized() ? window.unmaximize() : window.maximize();
     });
-    
+
     document.querySelector('.minimize-btn').addEventListener('click', () => {
         electron.remote.getCurrentWindow().minimize();
     });
 
     document.querySelector('#alwaysOnTop').addEventListener('change', (event) => {
         electron.remote
-                .getCurrentWindow()
-                .setAlwaysOnTop(event.srcElement.checked);
+            .getCurrentWindow()
+            .setAlwaysOnTop(event.srcElement.checked);
     });
 });

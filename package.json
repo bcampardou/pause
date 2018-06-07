@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "start:file": "electron . \"C:\\Users\\bcamp\\Downloads\\City at Night Timealpse Video.mp4\"",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
@@ -24,6 +25,7 @@
     "electron-builder": "^20.15.1"
   },
   "dependencies": {
+    "mime-types": "^2.1.18",
     "npm": "^6.1.0",
     "video.js": "^7.0.3",
     "videojs-contextmenu": "^2.0.0",

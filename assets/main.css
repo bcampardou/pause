@@ -64,6 +64,7 @@ body.open-playlist .header-bar .playlist-background {
     border-radius:50%;
     padding:0;
     border:0;
+    cursor: pointer;
 }
 .header-bar .close-btn {
     background:rgba(255, 0, 0, 0.322);
@@ -259,7 +260,8 @@ body.open-playlist .header-bar .playlist-background {
 
 .vjs-playlist-item {
     z-index:1;
-    margin:5px 10px;
+    margin:5px;
+    width:100%;
     height:75px;
 }
 
