@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "A minimal video player",
   "main": "main.js",
+  "directories": {
+    "output": "release"
+  },
   "scripts": {
     "start": "electron .",
-    "start:file": "electron . \"C:\\Users\\bcamp\\Downloads\\City at Night Timealpse Video.mp4\"",
+    "postinstall": "install-app-deps",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
@@ -19,6 +22,8 @@
     "avi"
   ],
   "author": "Béranger Campardou",
+  "email": "b.campardou@gmail.com",
+  "url:": "https://github.com/baobabcoder/pause",
   "license": "MIT",
   "devDependencies": {
     "electron": "^2.0.0",
@@ -27,7 +32,6 @@
   "dependencies": {
     "electron-updater": "^2.21.10",
     "mime-types": "^2.1.18",
-    "npm": "^6.1.0",
     "video.js": "^7.0.3",
     "videojs-contextmenu": "^2.0.0",
     "videojs-contextmenu-ui": "^4.0.0",
@@ -112,6 +116,12 @@
             "ia32"
           ]
         }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
       ]
     }
   }
