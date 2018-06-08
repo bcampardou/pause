@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "A minimal video player",
   "main": "main.js",
-  "directories": {
-    "output": "release"
-  },
   "scripts": {
     "start": "electron .",
     "postinstall": "install-app-deps",
