@@ -25,6 +25,7 @@
     "electron-builder": "^20.15.1"
   },
   "dependencies": {
+    "electron-updater": "^2.21.10",
     "mime-types": "^2.1.18",
     "npm": "^6.1.0",
     "video.js": "^7.0.3",
