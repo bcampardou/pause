@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "postinstall": "install-app-deps",
+    "postinstall": "electron-builder install-app-deps",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
@@ -52,18 +52,6 @@
         "role": "Viewer"
       },
       {
-        "ext": "flv",
-        "name": "Flash Video (FLV)",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "flv",
-        "name": "F4V",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
         "ext": "ogg",
         "name": "Ogg Video",
         "description": "",
@@ -76,26 +64,8 @@
         "role": "Viewer"
       },
       {
-        "ext": "avi",
-        "name": "AVI",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
         "ext": "mov",
         "name": "QuickTime File Format",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "3gp",
-        "name": "3GPP",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "mxf",
-        "name": "Material Exchange Format",
         "description": "",
         "role": "Viewer"
       }

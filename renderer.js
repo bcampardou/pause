@@ -5,8 +5,6 @@
 const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
 const videojs = require('video.js');
-const menu = require('videojs-contextmenu');
-const menuUi = require('videojs-contextmenu-ui');
 const playlist = require('videojs-playlist');
 const playlistUi = require('videojs-playlist-ui');
 const mime = require('mime-types');
@@ -14,6 +12,13 @@ const mime = require('mime-types');
 let playlistInfos = [];
 
 let player;
+
+let hackMimeType = (type) => {
+    switch (type) {
+        case 'video/quicktime': return 'video/mp4';
+        default: return type;
+    }
+}
 
 ipcRenderer.on('file-received', function(event, path) {
     if (!!path) {
@@ -23,7 +28,7 @@ ipcRenderer.on('file-received', function(event, path) {
             sources: [
                 {
                     src: 'file:///' + path,
-                    type: mime.lookup(filename)
+                    type: hackMimeType(mime.lookup(filename))
                 }]
         });
         player.playlist(playlistInfos);
@@ -33,9 +38,6 @@ ipcRenderer.on('file-received', function(event, path) {
 let initPlayer = function () {
     videojs.registerPlugin('playlist', playlist);
     videojs.registerPlugin('playlistUi', playlistUi);
-
-    videojs.registerPlugin('contextmenu', menu);
-    videojs.registerPlugin('contextmenuUI', menuUi);
 
     let Button = videojs.getComponent('Button');
     let PlaylistButton = videojs.extend(Button, {
@@ -63,10 +65,7 @@ let initPlayer = function () {
     player.playlist(playlistInfos);
     player.playlistUi({ playOnSelect: true });
     player.getChild('controlBar').addChild('PlaylistButton', {});
-    player.contextmenu();
-    player.contextmenuUI({
-        content: []
-    });
+    
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -77,7 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < this.files.length; i++) {
             playlistInfos.push({
                 name: this.files[i].name,
-                sources: [{ src: 'file:///' + this.files[i].path.split('\\').join('/'), type: this.files[i].type }]
+                sources: [
+                    { 
+                        src: 'file:///' + this.files[i].path.split('\\').join('/'), 
+                        type: hackMimeType(this.files[i].type) 
+                    }
+                ]
             });
         }
         player.playlist(playlistInfos, player.playlist.lastIndex() + 1);
