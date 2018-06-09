@@ -51,6 +51,19 @@ let initPlayer = function () {
             document.querySelector('body').classList.toggle('open-playlist');
         }
     });
+    let LoopButton = videojs.extend(Button, {
+        constructor: function () {
+            Button.apply(this, arguments);
+            this.controlText('Loop');
+            this.addClass('icon-loop');
+        },
+        handleClick: function () {
+            document.querySelector('.icon-loop').classList.toggle('active');
+            /* do something on click */
+            player.loop(!player.loop());
+        }
+    });
+    videojs.registerComponent('LoopButton', LoopButton);
     videojs.registerComponent('PlaylistButton', PlaylistButton);
 
     player = videojs('player', {
@@ -64,6 +77,7 @@ let initPlayer = function () {
 
     player.playlist(playlistInfos);
     player.playlistUi({ playOnSelect: true });
+    player.getChild('controlBar').addChild('LoopButton', {});
     player.getChild('controlBar').addChild('PlaylistButton', {});
     
 }

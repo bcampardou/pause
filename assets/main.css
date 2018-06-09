@@ -248,6 +248,14 @@ body.open-playlist .header-bar .playlist-background {
     content: "\e694";
 }
 
+.icon-loop:before {
+    content: "\e698";
+}
+
+.icon-loop.active {
+    color: rgb(0, 184, 230);
+}
+
 .vjs-playlist .vjs-selected {
     background: rgba(0,0,0,0);
 }
