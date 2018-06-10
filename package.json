@@ -28,6 +28,8 @@
   },
   "dependencies": {
     "electron-updater": "^2.21.10",
+    "ffmpeg-binaries": "^3.2.2-3",
+    "fluent-ffmpeg": "^2.1.2",
     "mime-types": "^2.1.18",
     "video.js": "^7.0.3",
     "videojs-contextmenu": "^2.0.0",
@@ -52,6 +54,12 @@
         "role": "Viewer"
       },
       {
+        "ext": "flv",
+        "name": "Flash Video (FLV)",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
         "ext": "ogg",
         "name": "Ogg Video",
         "description": "",
@@ -64,12 +72,30 @@
         "role": "Viewer"
       },
       {
+        "ext": "avi",
+        "name": "AVI",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
         "ext": "mov",
         "name": "QuickTime File Format",
         "description": "",
         "role": "Viewer"
+      },
+      {
+        "ext": "3gp",
+        "name": "3GPP",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
+        "ext": "mxf",
+        "name": "Material Exchange Format",
+        "description": "",
+        "role": "Viewer"
       }
-    ],
+],
     "mac": {
       "category": "public.app-category.video",
       "target": "dmg"

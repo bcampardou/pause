@@ -1,38 +1,58 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
+const remote = require('electron').remote,
+      ipcRenderer = require('electron').ipcRenderer,
+      videojs = require('video.js'),
+      playlist = require('videojs-playlist'),
+      playlistUi = require('videojs-playlist-ui'),
+      mime = require('mime-types'),
+      ffmpeg = require('fluent-ffmpeg');
 
-const remote = require('electron').remote;
-const ipcRenderer = require('electron').ipcRenderer;
-const videojs = require('video.js');
-const playlist = require('videojs-playlist');
-const playlistUi = require('videojs-playlist-ui');
-const mime = require('mime-types');
+let playlistInfos = [],
+    outputFolder = remote.app.getPath('temp'),
+    supportedFormats = ['video/mp4', 'video/ogg', 'video/ogv', 'video/webm'],
+    player,
+    addToPlaylist = (path) => {
+        path = path.split('\\').join('/');
+        let filenameWithExt = path.split('/').pop(),
+            type = mime.lookup(path),
+            filename = filenameWithExt.split('.').slice(0, -1).join('.'),
+            outputPath = outputFolder + '/' + filename + '.mp4';
 
-let playlistInfos = [];
+        if (supportedFormats.indexOf(type) > -1) {
+            playlistInfos.push({
+                name: filenameWithExt,
+                sources: [
+                    {
+                        src: 'file:///' + path,
+                        type: type
+                    }
+                ]
+            });
+            return;
+        }
+        console.log(outputPath);
+        let command = ffmpeg(path)
+            .output(outputPath)
+            .on('end', function (event) {
+                playlistInfos.push({
+                    name: filenameWithExt + '(mp4)',
+                    sources: [
+                        {
+                            src: 'file:///' + outputPath,
+                            type: 'video/mp4'
+                        }
+                    ]
+                });
+                refreshPlaylist();
+            })
+            .run();
 
-let player;
-
-let hackMimeType = (type) => {
-    switch (type) {
-        case 'video/quicktime': return 'video/mp4';
-        default: return type;
-    }
-}
-
-ipcRenderer.on('file-received', function(event, path) {
-    if (!!path) {
-        let filename = path.split('/').pop();
-        playlistInfos.push({
-            name: filename,
-            sources: [
-                {
-                    src: 'file:///' + path,
-                    type: hackMimeType(mime.lookup(filename))
-                }]
-        });
+    },
+    refreshPlaylist = () => {
         player.playlist(playlistInfos);
-    }
+    };
+
+ipcRenderer.on('file-received', function (event, path) {
+    if (!!path) addToPlaylist(path);
 });
 
 let initPlayer = function () {
@@ -72,35 +92,22 @@ let initPlayer = function () {
         preload: true
     });
     player.removeChild('BigPlayButton');
-    
 
-
-    player.playlist(playlistInfos);
     player.playlistUi({ playOnSelect: true });
     player.getChild('controlBar').addChild('LoopButton', {});
     player.getChild('controlBar').addChild('PlaylistButton', {});
-    
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initPlayer();
-
-    var fileInput = document.querySelector(".input-file");
-    fileInput.addEventListener("change", function (event) {
-        for (let i = 0; i < this.files.length; i++) {
-            playlistInfos.push({
-                name: this.files[i].name,
-                sources: [
-                    { 
-                        src: 'file:///' + this.files[i].path.split('\\').join('/'), 
-                        type: hackMimeType(this.files[i].type) 
-                    }
-                ]
-            });
-        }
-        player.playlist(playlistInfos, player.playlist.lastIndex() + 1);
-        this.value = null;
-        this.files = null;
+    document.querySelector(".input-file")
+            .addEventListener("change", function (event) {
+                for (let i = 0; i < this.files.length; i++) {
+                    addToPlaylist(this.files[i].path);
+                }
+                this.value = null;
+                this.files = null;
     });
 
     document.querySelector('#video-container').addEventListener('dragenter', () => {
