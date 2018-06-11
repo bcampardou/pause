@@ -44,6 +44,7 @@ let playlistInfos = [],
                     }
                 ]
             });
+            refreshPlaylist();
             return;
         }
         let command = ffmpeg(path)
