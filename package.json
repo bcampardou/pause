@@ -1,6 +1,6 @@
 {
   "name": "pause",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A minimal opiniated video player",
   "main": "main.js",
   "scripts": {
@@ -126,6 +126,12 @@
       {
         "ext": "mxf",
         "name": "Material Exchange Format",
+        "description": "",
+        "role": "Viewer"
+      },
+      {
+        "ext": "mkv",
+        "name": "Matroska Video",
         "description": "",
         "role": "Viewer"
       }

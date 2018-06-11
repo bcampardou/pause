@@ -27,10 +27,16 @@ let playlistInfos = [],
                 return 'win';
         }
     },
+    hackMimeType = (type) => {
+        switch(type) {
+            case 'video/quicktime': return 'video/mp4';
+            default: return type;
+        }
+    }
     addToPlaylist = (path) => {
         path = path.split('\\').join('/');
         let filenameWithExt = path.split('/').pop(),
-            type = mime.lookup(path),
+            type = hackMimeType(mime.lookup(path)),
             filename = filenameWithExt.split('.').slice(0, -1).join('.'),
             outputPath = outputFolder + '/' + filename + '.mp4';
 

@@ -233,6 +233,7 @@ body.open-playlist .header-bar .playlist-background {
 .video-js .vjs-control-bar 
 {
     display: flex;
+    background-color:rgba(0,0,0,0);
 }
 
 /* custom button */
