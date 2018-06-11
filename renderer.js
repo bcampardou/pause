@@ -1,15 +1,32 @@
 const remote = require('electron').remote,
-      ipcRenderer = require('electron').ipcRenderer,
-      videojs = require('video.js'),
-      playlist = require('videojs-playlist'),
-      playlistUi = require('videojs-playlist-ui'),
-      mime = require('mime-types'),
-      ffmpeg = require('fluent-ffmpeg');
+    ipcRenderer = require('electron').ipcRenderer,
+    videojs = require('video.js'),
+    playlist = require('videojs-playlist'),
+    playlistUi = require('videojs-playlist-ui'),
+    mime = require('mime-types'),
+    ffmpeg = require('fluent-ffmpeg'),
+    os = require('os'),
+    isDev = require('electron-is-dev');
 
 let playlistInfos = [],
     outputFolder = remote.app.getPath('temp'),
     supportedFormats = ['video/mp4', 'video/ogg', 'video/ogv', 'video/webm'],
     player,
+    getOS = () => {
+        switch (os.platform()) {
+            case 'aix':
+            case 'freebsd':
+            case 'linux':
+            case 'openbsd':
+            case 'android':
+                return 'linux';
+            case 'darwin':
+            case 'sunos':
+                return 'mac';
+            case 'win32':
+                return 'win';
+        }
+    },
     addToPlaylist = (path) => {
         path = path.split('\\').join('/');
         let filenameWithExt = path.split('/').pop(),
@@ -29,7 +46,6 @@ let playlistInfos = [],
             });
             return;
         }
-        console.log(outputPath);
         let command = ffmpeg(path)
             .output(outputPath)
             .on('end', function (event) {
@@ -51,11 +67,17 @@ let playlistInfos = [],
         player.playlist(playlistInfos);
     };
 
+let ffmpegPath = (isDev ?
+    './lib/' + getOS() + '/' + os.arch : './lib/bin') +
+    (os.platform === 'win32' ? '/ffmpeg.exe' : '/ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
+
 ipcRenderer.on('file-received', function (event, path) {
     if (!!path) addToPlaylist(path);
 });
 
 let initPlayer = function () {
+    debugger;
     videojs.registerPlugin('playlist', playlist);
     videojs.registerPlugin('playlistUi', playlistUi);
 
@@ -102,13 +124,13 @@ let initPlayer = function () {
 document.addEventListener('DOMContentLoaded', () => {
     initPlayer();
     document.querySelector(".input-file")
-            .addEventListener("change", function (event) {
-                for (let i = 0; i < this.files.length; i++) {
-                    addToPlaylist(this.files[i].path);
-                }
-                this.value = null;
-                this.files = null;
-    });
+        .addEventListener("change", function (event) {
+            for (let i = 0; i < this.files.length; i++) {
+                addToPlaylist(this.files[i].path);
+            }
+            this.value = null;
+            this.files = null;
+        });
 
     document.querySelector('#video-container').addEventListener('dragenter', () => {
         document.querySelector('body').classList.add('open-playlist');

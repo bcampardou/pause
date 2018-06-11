@@ -6,18 +6,16 @@ const autoUpdater = require('electron-updater').autoUpdater
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow,
-  ready = false
+  ready = false,
+  onOpenFile = function (event, link) {
+    if (!!event) event.preventDefault()
 
-
-var onOpenFile = function (event, link) {
-  if (!!event) event.preventDefault()
-
-  console.log('ready: ' + ready)
-  if (ready) {
-    mainWindow.webContents.send('file-received', link.split('\\').join('/'))
-    return
+    console.log('ready: ' + ready)
+    if (ready) {
+      mainWindow.webContents.send('file-received', link.split('\\').join('/'))
+      return
+    }
   }
-}
 
 app.on('open-file', onOpenFile)
 app.on('open-url', onOpenFile)
@@ -25,7 +23,7 @@ app.on('open-url', onOpenFile)
 function createWindow() {
   // Check for updates
   autoUpdater.checkForUpdatesAndNotify()
-  
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 720,
