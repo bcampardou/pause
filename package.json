@@ -1,7 +1,7 @@
 {
   "name": "pause",
   "version": "1.2.0",
-  "description": "A minimal video player",
+  "description": "A minimal opiniated video player",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
