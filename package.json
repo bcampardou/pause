@@ -1,7 +1,7 @@
 {
   "name": "pause",
-  "version": "1.2.1",
-  "description": "A minimal opiniated video player",
+  "version": "2.0.0-rc.1",
+  "description": "A minimal opiniated youtube video player you can keep always on top",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -15,8 +15,7 @@
     "Electron",
     "video",
     "player",
-    "mp4",
-    "avi"
+    "youtube"
   ],
   "author": "Béranger Campardou",
   "email": "b.campardou@gmail.com",
@@ -27,26 +26,17 @@
     "electron-builder": "^20.15.1"
   },
   "dependencies": {
+    "autocomplete-js": "^2.7.0",
     "electron-is-dev": "^0.3.0",
     "electron-updater": "^2.21.10",
-    "fluent-ffmpeg": "^2.1.2",
-    "mime-types": "^2.1.18",
     "video.js": "^7.0.3",
     "videojs-playlist": "^4.2.0",
-    "videojs-playlist-ui": "^3.4.0"
+    "videojs-youtube": "^2.5.0",
+    "youtube-search": "^1.1.1"
   },
   "build": {
     "appId": "com.electron.pause",
     "productName": "Pause",
-    "extraFiles": [
-      {
-        "from": "lib/${os}/${arch}",
-        "to": "lib/bin",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
     "mac": {
       "category": "public.app-category.video",
       "target": "dmg",
@@ -73,68 +63,6 @@
         "AppImage",
         "deb"
       ]
-    },
-    "fileAssociations": [
-      {
-        "ext": "mp4",
-        "name": "MPEG-4",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "webm",
-        "name": "WebM",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "flv",
-        "name": "Flash Video (FLV)",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "ogg",
-        "name": "Ogg Video",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "ogv",
-        "name": "Ogg Video",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "avi",
-        "name": "AVI",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "mov",
-        "name": "QuickTime File Format",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "3gp",
-        "name": "3GPP",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "mxf",
-        "name": "Material Exchange Format",
-        "description": "",
-        "role": "Viewer"
-      },
-      {
-        "ext": "mkv",
-        "name": "Matroska Video",
-        "description": "",
-        "role": "Viewer"
-      }
-    ]
+    }
   }
 }

@@ -1,148 +1,153 @@
 const remote = require('electron').remote,
-    ipcRenderer = require('electron').ipcRenderer,
     videojs = require('video.js'),
     playlist = require('videojs-playlist'),
-    playlistUi = require('videojs-playlist-ui'),
-    mime = require('mime-types'),
-    ffmpeg = require('fluent-ffmpeg'),
-    os = require('os'),
-    isDev = require('electron-is-dev');
+    config = require('./config'),
+    search = require('youtube-search');
+require('videojs-youtube');
 
 let playlistInfos = [],
-    outputFolder = remote.app.getPath('temp'),
-    supportedFormats = ['video/mp4', 'video/ogg', 'video/ogv', 'video/webm'],
+    searchResults = [],
     player,
-    getOS = () => {
-        switch (os.platform()) {
-            case 'aix':
-            case 'freebsd':
-            case 'linux':
-            case 'openbsd':
-            case 'android':
-                return 'linux';
-            case 'darwin':
-            case 'sunos':
-                return 'mac';
-            case 'win32':
-                return 'win';
-        }
+    refreshPlaylist = () => {
+        player.playlist(playlistInfos);
     },
-    hackMimeType = (type) => {
-        switch(type) {
-            case 'video/quicktime': return 'video/mp4';
-            default: return type;
-        }
-    }
-    addToPlaylist = (path) => {
-        path = path.split('\\').join('/');
-        let filenameWithExt = path.split('/').pop(),
-            type = hackMimeType(mime.lookup(path)),
-            filename = filenameWithExt.split('.').slice(0, -1).join('.'),
-            outputPath = outputFolder + '/' + filename + '.mp4';
+    initPlayer = function () {
+        videojs.registerPlugin('playlist', playlist);
 
-        if (supportedFormats.indexOf(type) > -1) {
-            playlistInfos.push({
-                name: filenameWithExt,
-                sources: [
-                    {
-                        src: 'file:///' + path,
-                        type: type
-                    }
-                ]
-            });
+        player = videojs('vjs-player', {
+            controls: false,
+            preload: true,
+            "techOrder": ["youtube"],
+            "youtube": { "iv_load_policy": 3, "ytControls": 2, "showinfo": 0, "modestbranding": 0, "color": "white", "autoplay": 1 }
+
+        }).ready(function () {
+            player = this;
+            player.removeChild('BigPlayButton');
             refreshPlaylist();
-            return;
-        }
-        let command = ffmpeg(path)
-            .output(outputPath)
-            .on('end', function (event) {
+            player.on('ended', function () {
+                player.playlist.next();
+            });
+        });
+    }
+
+document.addEventListener('DOMContentLoaded', () => {
+    debugger;
+    console.log(config);
+    // morphsearch
+    let morphSearch = document.getElementById('morphsearch'),
+        input = morphSearch.querySelector('input.morphsearch-input'),
+        submitButton = morphSearch.querySelector('.morphsearch-submit'),
+        ctrlClose = morphSearch.querySelector('span.morphsearch-close'),
+        playlistColumn = morphSearch.querySelector('#playlist'),
+        resultsColumn = morphSearch.querySelector('#results'),
+        isOpen = isAnimating = false,
+        // show/hide search area
+        toggleSearch = function (evt) {
+            evt.stopPropagation();
+            // return if open and the input gets focused
+            if (evt.type.toLowerCase() === 'focus' && isOpen) return false;
+
+            var offsets = morphsearch.getBoundingClientRect();
+            if (isOpen) {
+                morphSearch.classList.remove('open');
+
+                // trick to hide input text once the search overlay closes
+                if (input.value !== '') {
+                    setTimeout(function () {
+                        morphSearch.classList.add('hideInput');
+                        setTimeout(function () {
+                            morphSearch.classList.remove('hideInput');
+                            input.value = '';
+                        }, 300);
+                    }, 500);
+                }
+
+                input.blur();
+            }
+            else {
+                morphSearch.classList.add('open');
+            }
+            isOpen = !isOpen;
+        };
+
+
+    submitButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        resultsColumn.innerHTML = '<h2>Results</h2>';
+        search(input.value, {
+            maxResults: 10,
+            type: 'video',
+            key: config.YOUTUBE_API_KEY
+        }, (err, results) => {
+            if (!!err) { console.log(err); return; }
+
+            searchResults = results;
+            for (var i in searchResults) {
+                var videoItem = `<a class="dummy-media-object" href="#" 
+                    data-id="${searchResults[i].id}"
+                    data-link="${searchResults[i].link}"
+                    data-title="${searchResults[i].title} (${searchResults[i].channelTitle})"
+                    data-thumbnail="${searchResults[i].thumbnails.high.url}">
+                    <img src="${searchResults[i].thumbnails.high.url}" />
+                    <h3>${searchResults[i].title} (${searchResults[i].channelTitle})</h3>
+              </a>`;
+                resultsColumn.insertAdjacentHTML('beforeend', videoItem);
+            }
+        });
+    });
+
+    resultsColumn.addEventListener('click', function (ev) {
+        var dummyMediaObject = ev.target.closest('.dummy-media-object');
+        if (!dummyMediaObject) return;
+
+        ev.preventDefault();
+        for (var i in searchResults) {
+            if (dummyMediaObject.dataset.id === searchResults[i].id) {
+                //push in playlist
                 playlistInfos.push({
-                    name: filenameWithExt + '(mp4)',
+                    name: dummyMediaObject.dataset.title,
                     sources: [
                         {
-                            src: 'file:///' + outputPath,
-                            type: 'video/mp4'
+                            src: dummyMediaObject.dataset.link,
+                            type: 'video/youtube'
                         }
                     ]
                 });
                 refreshPlaylist();
-            })
-            .run();
-
-    },
-    refreshPlaylist = () => {
-        player.playlist(playlistInfos);
-    };
-
-let ffmpegPath = (isDev ?
-    './lib/' + getOS() + '/' + os.arch : './lib/bin') +
-    (os.platform === 'win32' ? '/ffmpeg.exe' : '/ffmpeg');
-ffmpeg.setFfmpegPath(ffmpegPath);
-
-ipcRenderer.on('file-received', function (event, path) {
-    if (!!path) addToPlaylist(path);
-});
-
-let initPlayer = function () {
-    debugger;
-    videojs.registerPlugin('playlist', playlist);
-    videojs.registerPlugin('playlistUi', playlistUi);
-
-    let Button = videojs.getComponent('Button');
-    let PlaylistButton = videojs.extend(Button, {
-        constructor: function () {
-            Button.apply(this, arguments);
-            this.controlText('Playlist');
-            this.addClass('icon-playlist');
-        },
-        handleClick: function () {
-            /* do something on click */
-            document.querySelector('body').classList.toggle('open-playlist');
-        }
-    });
-    let LoopButton = videojs.extend(Button, {
-        constructor: function () {
-            Button.apply(this, arguments);
-            this.controlText('Loop');
-            this.addClass('icon-loop');
-        },
-        handleClick: function () {
-            document.querySelector('.icon-loop').classList.toggle('active');
-            /* do something on click */
-            player.loop(!player.loop());
-        }
-    });
-    videojs.registerComponent('LoopButton', LoopButton);
-    videojs.registerComponent('PlaylistButton', PlaylistButton);
-
-    player = videojs('player', {
-        controls: true,
-        autoplay: true,
-        preload: true
-    });
-    player.removeChild('BigPlayButton');
-
-    player.playlistUi({ playOnSelect: true });
-    player.getChild('controlBar').addChild('LoopButton', {});
-    player.getChild('controlBar').addChild('PlaylistButton', {});
-
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    initPlayer();
-    document.querySelector(".input-file")
-        .addEventListener("change", function (event) {
-            for (let i = 0; i < this.files.length; i++) {
-                addToPlaylist(this.files[i].path);
+                var copiedDummyMO = dummyMediaObject.cloneNode(true);
+                copiedDummyMO.dataset.playlistIndex = playlistInfos.length - 1;
+                playlistColumn.insertAdjacentHTML('beforeend', copiedDummyMO.outerHTML);
+                toggleSearch(ev);
+                return;
             }
-            this.value = null;
-            this.files = null;
-        });
-
-    document.querySelector('#video-container').addEventListener('dragenter', () => {
-        document.querySelector('body').classList.add('open-playlist');
+        }
     });
 
+    playlistColumn.addEventListener('click', function (ev) {
+        var dummyMediaObject = ev.target.closest('.dummy-media-object');
+        if (!dummyMediaObject) return;
+
+        ev.preventDefault();
+        player.playlist.currentItem(parseInt(dummyMediaObject.dataset.playlistIndex));
+        toggleSearch(ev);
+    });
+
+    // events
+    morphSearch.addEventListener('click', function (event) {
+        if (this.classList.contains('open') === false) toggleSearch(event);
+    })
+    input.addEventListener('focus', toggleSearch);
+    ctrlClose.addEventListener('click', toggleSearch);
+    // esc key closes search overlay
+    // keyboard navigation events
+    document.addEventListener('keydown', function (ev) {
+        var keyCode = ev.keyCode || ev.which;
+        if (keyCode === 27 && isOpen) {
+            toggleSearch(ev);
+        }
+    });
+
+    // titlebar
     document.querySelector('.close-btn').addEventListener('click', () => {
         remote.app.exit();
     });
@@ -162,4 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .getCurrentWindow()
             .setAlwaysOnTop(event.srcElement.checked);
     });
+
+    initPlayer();
 });

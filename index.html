@@ -8,35 +8,42 @@
   <link rel="stylesheet" type="text/css" href="./assets/videojs-playlist-ui.css">
   <link rel="stylesheet" type="text/css" href="./assets/themify-icons.css">
   <link rel="stylesheet" type="text/css" href="./assets/main.css">
+  <link rel="stylesheet" type="text/css" href="./assets/morphsearch.css">
 </head>
 
-<body>
+<body class="open-playlist">
   <div class="header-bar">
     <div class="title-bar">
       <button class="close-btn"></button>
       <button class="large-btn"></button>
       <button class="minimize-btn"></button>
     </div>
+    
     <div class="always-on-toggle">
       <small>Keep visible</small>
       <input type="checkbox" id="alwaysOnTop" />
       <label for="alwaysOnTop">Toggle</label>
     </div>
-    <!-- <span class="playlist-background"></span> -->
   </div>
   <div id="video-container">
 
-    <video id="player" class="video-js" controls="true">
+    <video id="vjs-player" class="video-js" controls="true">
     </video>
-    <div id="playlist-container">
-      <div id="playlist" class="vjs-playlist"></div>
-      <div class="input-file-container">
-        <input class="input-file" type="file" multiple>
-        <label tabindex="0" for="my-file" class="input-file-trigger">
-          <i class="ti-import"></i>
-        </label>
-      </div>
-    </div>
+    <div id="morphsearch" class="morphsearch">
+      <form class="morphsearch-form">
+        <input class="morphsearch-input" type="search" placeholder="Search..."/>
+        <button class="morphsearch-submit" type="submit">Search</button>
+      </form>
+      <div class="morphsearch-content">
+        <div class="dummy-column" id="results">
+          <h2>Results</h2>
+        </div>
+        <div class="dummy-column" id="playlist">
+          <h2>Current playlist</h2>
+        </div>
+      </div><!-- /morphsearch-content -->
+      <span class="morphsearch-close"></span>
+    </div><!-- /morphsearch -->
   </div>
   <script>
     require('./renderer.js')

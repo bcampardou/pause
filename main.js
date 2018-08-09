@@ -6,19 +6,7 @@ const autoUpdater = require('electron-updater').autoUpdater
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow,
-  ready = false,
-  onOpenFile = function (event, link) {
-    if (!!event) event.preventDefault()
-
-    console.log('ready: ' + ready)
-    if (ready) {
-      mainWindow.webContents.send('file-received', link.split('\\').join('/'))
-      return
-    }
-  }
-
-app.on('open-file', onOpenFile)
-app.on('open-url', onOpenFile)
+    mainWindowSize = [720, 405]
 
 function createWindow() {
   // Check for updates
@@ -26,8 +14,8 @@ function createWindow() {
 
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 720,
-    height: 410,
+    width: mainWindowSize[0],
+    height: mainWindowSize[1],
     transparent: true,
     frame: false,
     show: false,
@@ -38,15 +26,21 @@ function createWindow() {
   mainWindow.loadFile('index.html')
 
   mainWindow.once('ready-to-show', () => {
-    ready = true
-    process.argv.slice(2).forEach(function (arg) {
-      onOpenFile(null, arg.split('\\').join('/'))
-    })
     mainWindow.show()
+  })
+  let resized = 0;
+  mainWindow.on('resize', (evt) => {
+    setTimeout(function () {
+      let size = mainWindow.getSize()
+      if(size[0] !== mainWindowSize[0] || size[1] !== mainWindowSize[1]) {
+        mainWindow.setSize(size[0], Math.round(size[0] * 0.5625), true)
+        setTimeout(() => { mainWindowSize = mainWindow.getSize() }, 100)
+      }
+    }, 200)
   })
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+   mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

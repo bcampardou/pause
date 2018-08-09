@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/baobabcoder/pause/master/build/icon.png" height="128">
   <h3 align="center">Pause</h3>
-  <p align="center">A simple video player<p>
+  <p align="center">A minimal opiniated youtube video player you can keep always on top<p>
 </p>
 
 
