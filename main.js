@@ -30,11 +30,13 @@ function createWindow() {
   })
   let resized = 0;
   mainWindow.on('resize', (evt) => {
+    setTimeout(function () {
       let size = mainWindow.getSize()
       if(size[0] !== mainWindowSize[0] || size[1] !== mainWindowSize[1]) {
-        mainWindow.setSize(size[0], Math.round(size[0] * 0.5625), false)
-        mainWindowSize = mainWindow.getSize()
+        mainWindow.setSize(size[0], Math.round(size[0] * 0.5625), true)
+        setTimeout(() => { mainWindowSize = mainWindow.getSize() }, 10)
       }
+    }, 5)
   })
 
   // Open the DevTools.
