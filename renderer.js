@@ -1,82 +1,68 @@
 const remote = require('electron').remote,
     videojs = require('video.js'),
-    playlist = require('videojs-playlist'),
     config = require('./config'),
     search = require('youtube-search');
 require('videojs-youtube');
 
-let playlistInfos = [],
-    searchResults = [],
-    player,
-    refreshPlaylist = () => {
-        player.playlist(playlistInfos);
-    },
+document.addEventListener('DOMContentLoaded', () => {
+    let searchForm = document.querySelector('#search-form'),
+        searchField = searchForm.querySelector('#inpt_search'),
+        resultsColumn = document.querySelector('#results'),
+        searchResults = [],
+        isOpen = isAnimating = false,
+        currentVideo = { id: 'e-AlzW6tnmo', type: 'video/youtube', src: 'https://www.youtube.com/watch?v=e-AlzW6tnmo' },
+        playRelatedVideo = function () {
+            search('', {
+                relatedToVideoId: currentVideo.id,
+                maxResults: 1,
+                videoEmbeddable: true,
+                videoSyndicated: true,
+                type: 'video',
+                key: config.YOUTUBE_API_KEY
+            }, (err, results) => {
+                if (!!err) { console.log(err); return; }
+
+                result = results[0];
+                playWithInfos({ id: result.id, type: 'video/youtube', src: result.link });
+            });
+        }
     initPlayer = function () {
-        videojs.registerPlugin('playlist', playlist);
+        return videojs('vjs-player', {
+        }, function () {
+            console.log('player ready');
+            this.removeChild('BigPlayButton');
+            this.on('ended', function () {
+                playRelatedVideo();
+            });
+            this.on('error', function(event) {
+                if(!event) return;
 
-        player = videojs('vjs-player', {
-            controls: false,
-            preload: true,
-            "techOrder": ["youtube"],
-            "youtube": { "iv_load_policy": 3, "ytControls": 2, "showinfo": 0, "modestbranding": 0, "color": "white", "autoplay": 1 }
-
-        }).ready(function () {
-            player = this;
-            player.removeChild('BigPlayButton');
-            refreshPlaylist();
-            player.on('ended', function () {
-                player.playlist.next();
+                this.error(null);
+                playRelatedVideo();
+                
             });
         });
-    }
-
-document.addEventListener('DOMContentLoaded', () => {
-    debugger;
-    console.log(config);
-    // morphsearch
-    let morphSearch = document.getElementById('morphsearch'),
-        input = morphSearch.querySelector('input.morphsearch-input'),
-        submitButton = morphSearch.querySelector('.morphsearch-submit'),
-        ctrlClose = morphSearch.querySelector('span.morphsearch-close'),
-        playlistColumn = morphSearch.querySelector('#playlist'),
-        resultsColumn = morphSearch.querySelector('#results'),
-        isOpen = isAnimating = false,
-        // show/hide search area
-        toggleSearch = function (evt) {
-            evt.stopPropagation();
-            // return if open and the input gets focused
-            if (evt.type.toLowerCase() === 'focus' && isOpen) return false;
-
-            var offsets = morphsearch.getBoundingClientRect();
-            if (isOpen) {
-                morphSearch.classList.remove('open');
-
-                // trick to hide input text once the search overlay closes
-                if (input.value !== '') {
-                    setTimeout(function () {
-                        morphSearch.classList.add('hideInput');
-                        setTimeout(function () {
-                            morphSearch.classList.remove('hideInput');
-                            input.value = '';
-                        }, 300);
-                    }, 500);
-                }
-
-                input.blur();
+    },
+        player = initPlayer(),
+        playWithInfos = function (infos) {
+            console.log('playWithInfos');
+            if (!!player) {
+                currentVideo = infos;
+                player.src({ type: currentVideo.type, src: currentVideo.src });
+                player.play();
             }
-            else {
-                morphSearch.classList.add('open');
-            }
-            isOpen = !isOpen;
         };
 
-
-    submitButton.addEventListener('click', function (event) {
+    searchForm.addEventListener('submit', function (event) {
         event.preventDefault();
-        resultsColumn.innerHTML = '<h2>Results</h2>';
-        search(input.value, {
+        resultsColumn.innerHTML = '';
+        resultsColumn.classList.add('visible');
+        isOpen = true;
+        search(searchField.value, {
             maxResults: 10,
             type: 'video',
+            videoEmbeddable: 'true',
+            videoSyndicated: 'true',
             key: config.YOUTUBE_API_KEY
         }, (err, results) => {
             if (!!err) { console.log(err); return; }
@@ -84,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             searchResults = results;
             for (var i in searchResults) {
                 var videoItem = `<a class="dummy-media-object" href="#" 
+                    data-index="${i}" 
                     data-id="${searchResults[i].id}"
                     data-link="${searchResults[i].link}"
                     data-title="${searchResults[i].title} (${searchResults[i].channelTitle})"
@@ -101,49 +88,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!dummyMediaObject) return;
 
         ev.preventDefault();
+        searchField.closest('.search').classList.remove('active');
+        resultsColumn.classList.remove('visible');
+        isOpen = false;
         for (var i in searchResults) {
             if (dummyMediaObject.dataset.id === searchResults[i].id) {
-                //push in playlist
-                playlistInfos.push({
-                    name: dummyMediaObject.dataset.title,
-                    sources: [
-                        {
-                            src: dummyMediaObject.dataset.link,
-                            type: 'video/youtube'
-                        }
-                    ]
-                });
-                refreshPlaylist();
-                var copiedDummyMO = dummyMediaObject.cloneNode(true);
-                copiedDummyMO.dataset.playlistIndex = playlistInfos.length - 1;
-                playlistColumn.insertAdjacentHTML('beforeend', copiedDummyMO.outerHTML);
-                toggleSearch(ev);
+                playWithInfos({ id: dummyMediaObject.dataset.id, type: 'video/youtube', src: dummyMediaObject.dataset.link });
                 return;
             }
         }
     });
 
-    playlistColumn.addEventListener('click', function (ev) {
-        var dummyMediaObject = ev.target.closest('.dummy-media-object');
-        if (!dummyMediaObject) return;
-
-        ev.preventDefault();
-        player.playlist.currentItem(parseInt(dummyMediaObject.dataset.playlistIndex));
-        toggleSearch(ev);
-    });
-
     // events
-    morphSearch.addEventListener('click', function (event) {
-        if (this.classList.contains('open') === false) toggleSearch(event);
-    })
-    input.addEventListener('focus', toggleSearch);
-    ctrlClose.addEventListener('click', toggleSearch);
+    searchField.addEventListener('focus', function (event) {
+        if (resultsColumn.classList.contains('visible') === false) {
+            searchField.closest('.search').classList.add('active');
+            resultsColumn.classList.add('visible');
+            isOpen = true;
+        }
+    });
+    // ctrlClose.addEventListener('click', toggleSearch);
     // esc key closes search overlay
     // keyboard navigation events
     document.addEventListener('keydown', function (ev) {
         var keyCode = ev.keyCode || ev.which;
         if (keyCode === 27 && isOpen) {
-            toggleSearch(ev);
+            searchField.closest('.search').classList.remove('active');
+            resultsColumn.classList.remove('visible');
+            isOpen = false;
         }
     });
 
@@ -167,6 +139,4 @@ document.addEventListener('DOMContentLoaded', () => {
             .getCurrentWindow()
             .setAlwaysOnTop(event.srcElement.checked);
     });
-
-    initPlayer();
 });

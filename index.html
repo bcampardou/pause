@@ -4,20 +4,24 @@
 <head>
   <meta charset="UTF-8">
   <title>Pause</title>
-  <link rel="stylesheet" type="text/css" href="./assets/video-js.min.css">
+  <link rel="stylesheet" type="text/css" href="./node_modules/video.js/dist/video-js.min.css">
   <link rel="stylesheet" type="text/css" href="./assets/themify-icons.css">
   <link rel="stylesheet" type="text/css" href="./assets/main.css">
   <link rel="stylesheet" type="text/css" href="./assets/morphsearch.css">
 </head>
 
-<body>
+<body class="">
   <div class="header-bar">
     <div class="title-bar">
-      <button class="close-btn"></button>
-      <button class="large-btn"></button>
-      <button class="minimize-btn"></button>
+      <button class="close-btn"><i class="ti-close"></i></button>
+      <button class="large-btn"><i class="ti-plus"></i></button>
+      <button class="minimize-btn"><i class="ti-minus"></i></button>
     </div>
-    
+    <label class="search" for="inpt_search">
+      <form id="search-form">
+        <input id="inpt_search" type="text" />
+      </form>
+    </label>
     <div class="always-on-toggle">
       <small>Keep visible</small>
       <input type="checkbox" id="alwaysOnTop" />
@@ -25,24 +29,12 @@
     </div>
   </div>
   <div id="video-container">
-
-    <video id="vjs-player" class="video-js" controls="true">
+    <div class="dummy-column" id="results">
+    </div>
+    <video id="vjs-player" 
+    data-setup='{ "displayError": false, "bigPlayButton": false, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://youtu.be/XIMLoLxmTDw?t=9h59m59s"}], "youtube": { "ytControls": 2 } }'
+      class="video-js">
     </video>
-    <div id="morphsearch" class="morphsearch">
-      <form class="morphsearch-form">
-        <input class="morphsearch-input" type="search" placeholder="Search..."/>
-        <button class="morphsearch-submit" type="submit">Search</button>
-      </form>
-      <div class="morphsearch-content">
-        <div class="dummy-column" id="results">
-          <h2>Results</h2>
-        </div>
-        <div class="dummy-column" id="playlist">
-          <h2>Current playlist</h2>
-        </div>
-      </div><!-- /morphsearch-content -->
-      <span class="morphsearch-close"></span>
-    </div><!-- /morphsearch -->
   </div>
   <script>
     require('./renderer.js')
