@@ -111,23 +111,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // esc key closes search overlay
     // keyboard navigation events
     document.addEventListener('keydown', function (ev) {
-        var keyCode = ev.keyCode || ev.which;
-        if (keyCode === 27 && isOpen) {
+        if (ev.code === 'Escape' && isOpen) {
             searchField.closest('.search').classList.remove('active');
             resultsColumn.classList.remove('visible');
             isOpen = false;
+        } else if(ev.target.classList.contains('html5-video-player')) {
+            let event = new ev.constructor(ev.type, ev);
+            document.querySelector('.html5-video-player').dispatchEvent(event);
         }
     });
 
     // titlebar
     document.querySelector('.close-btn').addEventListener('click', () => {
         remote.app.exit();
-    });
-
-    document.querySelector('.large-btn').addEventListener('click', () => {
-        document.querySelector('body').classList.toggle('maximized');
-        let window = remote.getCurrentWindow();
-        window.isMaximized() ? window.unmaximize() : window.maximize();
     });
 
     document.querySelector('.minimize-btn').addEventListener('click', () => {
