@@ -1,6 +1,6 @@
 {
   "name": "pause",
-  "version": "2.0.0-rc.2",
+  "version": "2.0.0-rc.3",
   "description": "A minimal opiniated youtube video player you can keep always on top",
   "main": "main.js",
   "scripts": {
