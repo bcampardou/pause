@@ -25,24 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 result = results[0];
                 playWithInfos({ id: result.id, type: 'video/youtube', src: result.link });
             });
-        }
-    initPlayer = function () {
-        return videojs('vjs-player', {
-        }, function () {
-            console.log('player ready');
-            this.removeChild('BigPlayButton');
-            this.on('ended', function () {
-                playRelatedVideo();
-            });
-            this.on('error', function(event) {
-                if(!event) return;
+        },
+        initPlayer = function () {
+            return videojs('vjs-player', {
+            }, function () {
+                this.removeChild('BigPlayButton');
+                this.on('ended', function () {
+                    playRelatedVideo();
+                });
+                this.on('error', function (event) {
+                    if (!event) return;
 
-                this.error(null);
-                playRelatedVideo();
-                
+                    this.error(null);
+                    playRelatedVideo();
+                });
             });
-        });
-    },
+        },
         player = initPlayer(),
         playWithInfos = function (infos) {
             console.log('playWithInfos');
@@ -59,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsColumn.classList.add('visible');
         isOpen = true;
         search(searchField.value, {
-            maxResults: 10,
+            maxResults: 20,
             type: 'video',
             videoEmbeddable: 'true',
             videoSyndicated: 'true',
@@ -115,9 +113,19 @@ document.addEventListener('DOMContentLoaded', () => {
             searchField.closest('.search').classList.remove('active');
             resultsColumn.classList.remove('visible');
             isOpen = false;
-        } else if(ev.target.classList.contains('html5-video-player')) {
+        } else if (ev.target.classList.contains('html5-video-player')) {
             let event = new ev.constructor(ev.type, ev);
             document.querySelector('.html5-video-player').dispatchEvent(event);
+        }
+    });
+
+    document.addEventListener('click', function (ev) {
+        if (ev.target.tagName.toLowerCase() === 'a') {
+            if (ev.target.href.indexOf('/watch?v=')) {
+                ev.preventDefault();
+                let videoId = ev.target.href.split('/watch?v=').pop();
+                playWithInfos({ id: videoId, type: 'video/youtube', src: 'https://www.youtube.com/watch?v=' + videoId });
+            }
         }
     });
 

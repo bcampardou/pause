@@ -35,7 +35,7 @@ body:hover .header-bar {
     width:calc(100% - 10px);
     display: -ms-flex;
     height: 30px;
-    background: rgba(0,0,0,0);
+    background: rgba(0,0,0,0.8);
     color: #ffffff;
     z-index:999;
     opacity:0;
