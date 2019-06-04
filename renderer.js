@@ -23,11 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!!err) { console.log(err); return; }
 
                 result = results[0];
-                playWithInfos({ id: result.id, type: 'video/youtube', src: result.link });
+                if (!!result) {
+                    playWithInfos({ id: result.id, type: 'video/youtube', src: result.link });
+                }
             });
         },
         initPlayer = function () {
             return videojs('vjs-player', {
+                
             }, function () {
                 this.removeChild('BigPlayButton');
                 this.on('ended', function () {
@@ -119,15 +122,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.addEventListener('click', function (ev) {
-        if (ev.target.tagName.toLowerCase() === 'a') {
-            if (ev.target.href.indexOf('/watch?v=')) {
-                ev.preventDefault();
-                let videoId = ev.target.href.split('/watch?v=').pop();
-                playWithInfos({ id: videoId, type: 'video/youtube', src: 'https://www.youtube.com/watch?v=' + videoId });
-            }
-        }
-    });
+    // document.addEventListener('click', function (ev) {
+    //     if (ev.target.tagName.toLowerCase() === 'a') {
+    //         if (ev.target.href.indexOf('/watch?v=')) {
+    //             ev.preventDefault();
+    //             let videoId = ev.target.href.split('/watch?v=').pop();
+    //             playWithInfos({ id: videoId, type: 'video/youtube', src: 'https://www.youtube.com/watch?v=' + videoId });
+    //         }
+    //     }
+    // });
 
     // titlebar
     document.querySelector('.close-btn').addEventListener('click', () => {

@@ -1,12 +1,14 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain } = require('electron')
+let aspect = require('./ratio-handler')
 const {autoUpdater} = require("electron-updater")
 
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow,
-    mainWindowSize = [730, 415]
+    mainWindowSize = [730, 415],
+    mainWindowHandler
 
 function createWindow() {
   // Check for updates
@@ -28,16 +30,12 @@ function createWindow() {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
-  let resized = 0;
-  mainWindow.on('resize', (evt) => {
-    setTimeout(function () {
-      let size = mainWindow.getSize()
-      if(size[0] !== mainWindowSize[0] || size[1] !== mainWindowSize[1]) {
-        mainWindow.setSize(size[0], Math.round((size[0] - 10) * 0.5625) + 10, true)
-        setTimeout(() => { mainWindowSize = mainWindow.getSize() }, 10)
-      }
-    }, 5)
-  })
+  
+   //Create a new handler for the mainWindow
+   mainWindowHandler = new aspect(mainWindow);
+   
+   //define the ratio
+   mainWindowHandler.setRatio(16, 9, 10);
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -47,6 +45,8 @@ function createWindow() {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
+    mainWindowHandler.stop()
+    mainWindowHandler = null
     mainWindow = null
   })
 }

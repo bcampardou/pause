@@ -6,7 +6,7 @@
     width: 12px;
     box-sizing: border-box;
     padding: 2px -3px 0px 9px;
-     border: 1px solid rgba(236, 185, 16, 0.6); /*rgba(115,133,159,.7); */
+     border: 1px solid rgba(255,255,255, 0.6); /*rgba(115,133,159,.7); */
     border-radius: 50%;
     transition: all 200ms ease;
     cursor: text;
@@ -20,7 +20,7 @@
     height: 7px;
     right: -2px;
     top: 8px;
-    background: rgba(236, 185, 16, 0.6); /*rgba(115,133,159,.7);*/
+    background: rgba(255,255,255, 0.6); /*rgba(115,133,159,.7);*/
     border-radius: 3px;
     transform: rotate(-45deg);
 	transition: all 200ms ease;
@@ -30,7 +30,7 @@
     .search:hover {
 		width: 200px;
 		height: 25px;
-		border-radius: 10px;
+		border-radius: 15px;
 		top:2px;
 	}
 	.search.active:after,
@@ -46,7 +46,7 @@
         box-sizing: border-box;
         font-family: Helvetica;
         font-size: 15px;
-        color: rgb(236, 185, 16);/*rgba(115,133,159,1);*/
+        color: #ffffff;/*rgba(115,133,159,1);*/
         background: transparent;
 		outline-width: 0px;
 		opacity:0;

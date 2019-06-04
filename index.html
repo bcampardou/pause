@@ -16,7 +16,7 @@
       <button class="close-btn"><i class="ti-close"></i></button>
       <button class="minimize-btn"><i class="ti-minus"></i></button>
     </div>
-    <label class="search" for="inpt_search">
+    <label class="search hide-sm" for="inpt_search">
       <form id="search-form">
         <input id="inpt_search" type="text" />
       </form>
@@ -30,7 +30,7 @@
   <div id="video-container">
     <div class="dummy-column" id="results">
     </div>
-    <video id="vjs-player" data-setup='{ "displayError": false, "bigPlayButton": false, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://youtu.be/XIMLoLxmTDw?t=9h59m59s"}], "youtube": { "ytControls": 2 } }'
+    <video id="vjs-player" data-setup='{ "displayError": false, "bigPlayButton": false, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://youtu.be/XIMLoLxmTDw?t=9h59m59s"}], "youtube": { "ytControls": 2, "iv_load_policy": 0, "color": "white", "origin": "https://www.youtube.com", "widget_referrer": "https://www.youtube.com" } }'
       class="video-js">
 
     </video>
