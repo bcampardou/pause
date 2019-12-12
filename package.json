@@ -1,7 +1,7 @@
 {
   "name": "pause",
   "version": "2.0.0-rc.4",
-  "description": "A minimal opiniated youtube video player you can keep always on top",
+  "description": "A minimal opinionated youtube video player you can keep always on top",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -23,15 +23,15 @@
   "url:": "https://github.com/baobabcoder/pause",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^2.0.0",
-    "electron-builder": "^20.15.1",
-    "electron-is-dev": "^0.3.0"
+    "electron": "^7.1.4",
+    "electron-builder": "^21.2.0",
+    "electron-is-dev": "^1.1.0"
   },
   "dependencies": {
-    "electron-updater": "^3.1.2",
-    "video.js": "^7.1.0",
+    "electron-updater": "^4.2.0",
+    "video.js": "^7.6.6",
     "videojs-youtube": "^2.6.0",
-    "youtube-search": "^1.1.1"
+    "youtube-search": "^1.1.4"
   },
   "build": {
     "appId": "com.electron.pause",

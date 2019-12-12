@@ -1,22 +1,22 @@
 module.exports = function(window) {
     this._rem = false;
     this._win = window;
+    this._move = false;
     this._oldRes = this._win.getSize();
     this._wRatio = 0;
     this._hRatio = 0;
-    this._wAddtional = 10;
-    this._hAddtional = 0;
     this._func1 = (wRatio, hRatio) => {
-        if (!this._ended) {
+        if (!this._ended && !this._move) {
             let size = this._win.getSize();
             let widthChanged = this._oldRes[0] != size[0];
             var ratioY2X = this._hRatio / this._wRatio;
             if (widthChanged) {
-                this._win.setSize(size[0], parseInt((size[0] * ratioY2X).toString()) + this._hAddtional);
+                this._win.setSize(size[0], parseInt((size[0] * ratioY2X).toString()));
             } else {
-                this._win.setSize(parseInt((size[1] / ratioY2X).toString()), size[1] + this._hAddtional);
+                this._win.setSize(parseInt((size[1] / ratioY2X).toString()), size[1]);
             }
         }
+        this._move = false;
     }
     this._func2 = () => {
         this._rem = true;
@@ -36,6 +36,9 @@ module.exports = function(window) {
         }, sLoop);
         this._wRatio = wRatio;
         this._hRatio = hRatio;
+        this._win.on('will-move', () => {
+            this._move = true;
+        })
         this._win.on('resize', this._func1);
         this._win.on('close', this._func2);
         this.setRatio = function() {

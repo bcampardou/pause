@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             search('', {
                 relatedToVideoId: currentVideo.id,
                 maxResults: 1,
-                videoEmbeddable: true,
+                videoEmbeddable: false,
                 videoSyndicated: true,
                 type: 'video',
                 key: config.YOUTUBE_API_KEY
