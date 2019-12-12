@@ -906,7 +906,7 @@ m3u8-parser@4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/m3u8-parser/-/m3u8-parser-4.2.0.tgz#c8e0785fd17f741f4408b49466889274a9e36447"
 
-m3u8-parser@4.4.0:
+m3u8-parser@4.4.0, m3u8-parser@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/m3u8-parser/-/m3u8-parser-4.4.0.tgz#adf606c0af6d97f6750095a42006c2ae03dde177"
   dependencies:
@@ -965,7 +965,7 @@ mpd-parser@0.6.1:
     global "^4.3.0"
     url-toolkit "^2.1.1"
 
-mpd-parser@0.8.1:
+mpd-parser@0.8.1, mpd-parser@^0.8.1:
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/mpd-parser/-/mpd-parser-0.8.1.tgz#db299dbec337999fbbbace989d227c7b03dc8ea7"
   dependencies:
@@ -987,6 +987,10 @@ mux.js@4.4.1:
 mux.js@5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/mux.js/-/mux.js-5.2.1.tgz#6698761fc88da5acecea0758ac25f11d3a08bee8"
+
+mux.js@^5.5.1:
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/mux.js/-/mux.js-5.5.1.tgz#5bd5d7b2e5e5560da8126928e93af3c532e08372"
 
 normalize-package-data@^2.5.0:
   version "2.5.0"
