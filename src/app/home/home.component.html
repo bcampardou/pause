@@ -1,0 +1,38 @@
+<div class="container" [ngClass]="{ 'hover': searchMode|async }">
+  <div class="topbar">
+    <button class="close" (click)="close()"><i class="ti-close"></i></button>
+    <button class="minimize" (click)="minimize()"><i class="ti-minus"></i></button>
+    <span style="flex:1;"></span>
+
+    <span class="search-container" *ngIf="searchMode|async">
+      <form>
+        <input #searchInput type="text" class="search-input" [(ngModel)]="searchText" placeholder="Search..."
+          [ngModelOptions]="{standalone: true}">
+        <button class="search-button" (click)="search()"><i class="ti-search"></i></button>
+      </form>
+    </span>
+    <div class="always-on-toggle">
+      <small>Keep visible</small>
+      <input type="checkbox" (change)="alwaysOnTopChanged($event)" id="alwaysOnTop" />
+      <label for="alwaysOnTop">Toggle</label>
+    </div>
+    <i class="drag-handler ti-move"></i>
+  </div>
+  <i class="ti-help-alt shortcuts-button" [popover]="shortcutsHelpPopover"></i>
+  <popover-content #shortcutsHelpPopover title="Shortcuts" placement="bottom-left" [animation]="true">
+    <ul class="shortcuts-list">
+      <li><kbd>{{ctrlKey}}</kbd>+<kbd>F</kbd>: Toggle search mode</li>
+    </ul>
+  </popover-content>
+  <div plyr [ngClass]="{'search-mode-video': searchMode|async}" plyrTitle="Video" [plyrPlaysInline]="true"
+    [plyrSources]="currentVideos" (plyrInit)="initPlayer($event)" [plyrOptions]="plyrOptions"></div>
+
+  <div class="videos-container" *ngIf="searchMode|async">
+    <a (click)="playVideo(video)" href="#" class="video-element" *ngFor="let video of videos">
+      <div class="video-img">
+        <img src="{{video.thumbnailUrl}}" />
+      </div>
+      <div class="video-title">{{video.title}}</div>
+    </a>
+  </div>
+</div>

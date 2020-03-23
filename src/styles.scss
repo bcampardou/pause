@@ -1,0 +1,300 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
+@import './assets/themify-icons.css';
+@import 'ngx-smart-popover/scss/popover-content.component.scss';
+
+$main-color: #00b3ff;
+
+/* You can add global styles to this file, and also import other style files */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  font-family: 'Oswald';
+  background-color: transparent;
+
+  popover-content {
+    z-index: 99999;
+  }
+
+  .popover.popover-content {
+    background-color: rgba(117, 117, 117, 0.7);
+    border-radius: 5px;
+
+    .arrow {
+      display: none;
+    }
+  }
+
+  .shortcuts-button {
+    position: absolute;
+    right: 30px;
+    top: 0px;
+    color: $main-color;
+    z-index: 9999;
+  }
+
+  div.plyr {
+    transition: scale ease-in-out 0.5s;
+    display: flex;
+    position: absolute;
+    top: 25px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(100% - 25px);
+    transform: scale(1);
+    transition: transform ease-in-out 0.5s;
+    border-radius: 5px;
+
+    iframe {
+      flex: 1 100%;
+      height: 100%;
+    }
+  }
+
+  .topbar {
+    display: flex;
+    visibility: visible;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    transition: opacity ease-in-out 0.3s;
+    transition-delay: 0.1s;
+    overflow: visible;
+
+    .drag-handler {
+      -webkit-user-select: none;
+      -webkit-app-region: drag;
+      cursor: grab;
+      color: $main-color;
+    }
+
+    .close,
+    .large,
+    .minimize {
+      background: transparent;
+      color: $main-color;
+      border: 0;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border: 0;
+      cursor: pointer;
+
+      &:active,
+      &:focus {
+        outline: 0;
+      }
+    }
+
+    .close:hover {
+      color: rgba(255, 0, 0, 0.7);
+    }
+
+    .minimize:hover {
+      color: rgba(255, 208, 0, 0.7);
+    }
+
+    .search-container {
+      float: right;
+      margin-right: 15px;
+
+      .search-input {
+        background: lightgrey;
+        height: 15px;
+        padding: 5px 15px;
+        border-top-left-radius: 1em;
+        border-bottom-left-radius: 1em;
+        border: grey;
+        color: $main-color;
+
+        &:active,
+        &:focus {
+          outline: 0;
+          border-color: $main-color;
+        }
+      }
+
+      .search-button {
+        border-top-right-radius: 1em;
+        background-color: $main-color;
+        border-bottom-right-radius: 1em;
+        border: 0;
+        padding: 5px 10px 5px 6px;
+        color: white;
+        cursor: pointer;
+
+        &:active,
+        &:focus {
+          outline: 0;
+          border-color: $main-color;
+        }
+      }
+    }
+
+    .always-on-toggle {
+      float: right;
+      display: flex;
+      margin: 0 35px 0 0;
+
+      small {
+        display: block;
+        color: #00b3ff;
+        font-variant: all-small-caps;
+        font-size: 1rem;
+        margin-top: -5px;
+      }
+
+      input[type=checkbox] {
+        height: 0;
+        width: 0;
+        visibility: hidden;
+      }
+
+      label {
+        cursor: pointer;
+        text-indent: -9999px;
+        width: 34px;
+        height: 18px;
+        background: grey;
+        display: block;
+        border-radius: 10px;
+        position: relative;
+
+        &:after {
+          content: '';
+          position: absolute;
+          top: 2px;
+          left: 3px;
+          width: 14px;
+          height: 14px;
+          background: #fff;
+          border-radius: 8px;
+          transition: 0.3s;
+        }
+
+        &:active:after {
+          width: 15px;
+        }
+      }
+
+      input:checked+label {
+        background: $main-color;
+      }
+
+      input:checked+label:after {
+        left: calc(100% - 2px);
+        transform: translateX(-100%);
+      }
+    }
+  }
+
+  .videos-container {
+    display: flex;
+    visibility: hidden;
+    position: absolute;
+    right: 3%;
+    bottom: 20px;
+    width: 30%;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity ease-in-out 0.5s;
+    transition-delay: 0.3s;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+
+    .video-element {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 5px;
+      margin: 2px;
+      border-radius: 5px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.7);
+
+      .video-img {
+
+        img {
+          width: 100%;
+          max-width: 150px;
+          border-radius: 3px;
+        }
+      }
+
+      .video-title {
+        padding-left: 10px;
+        font-size: 1rem;
+      }
+
+    }
+  }
+
+  .container.hover {
+    .search-mode-video div.plyr {
+      transform: scale(0.6) translate(-30%, 0%);
+    }
+
+    .topbar {
+      visibility: visible;
+      opacity: 1;
+      width: 100%;
+    }
+
+    .videos-container {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+
+
+}
+
+::-webkit-scrollbar {
+  width: 0.2em;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+
+button,
+input,
+.search-container,
+.always-on-toggle {
+  -webkit-app-region: no-drag;
+}
+
+
+// plyr
+.plyr--full-ui input[type=range] {
+  color: $main-color;
+}
+
+ul.shortcuts-list {
+  list-style: none;
+  font-size: 0.8rem;
+}
+
+kbd {
+  display: inline-block;
+  border: 1px solid #ccc;
+  color: black;
+  border-radius: 4px;
+  padding: 0.1em 0.5em;
+  margin: 0 0.2em;
+  box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
+  background-color: #f7f7f7;
+}
