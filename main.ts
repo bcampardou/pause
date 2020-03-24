@@ -62,13 +62,6 @@ function createWindow(): BrowserWindow {
     // when you should delete the corresponding element.
     win = null;
   });
-
-
-  // handle shortcuts
-  // globalShortcut.register('CommandOrControl+F', () => {
-  //   ipcMain.emit("CommandOrControl+F");
-  // });
-
   return win;
 }
 app.commandLine.appendSwitch('high-dpi-support', 'true');
