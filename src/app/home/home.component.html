@@ -2,7 +2,7 @@
   <div class="topbar">
     <button class="close" (click)="close()"><i class="ti-close"></i></button>
     <button class="minimize" (click)="minimize()"><i class="ti-minus"></i></button>
-    <span style="flex:1;"></span>
+    <span style="flex:1;" class=" drag-handler"></span>
 
     <span class="search-container" *ngIf="searchMode|async">
       <form>
@@ -11,12 +11,12 @@
         <button class="search-button" (click)="search()"><i class="ti-search"></i></button>
       </form>
     </span>
-    <div class="always-on-toggle">
+    <div class="always-on-toggle" *ngIf="searchMode|async">
       <small>Keep visible</small>
       <input type="checkbox" (change)="alwaysOnTopChanged($event)" id="alwaysOnTop" />
       <label for="alwaysOnTop">Toggle</label>
     </div>
-    <i class="drag-handler ti-move"></i>
+    <!-- <i class="drag-handler ti-move"></i> -->
   </div>
   <i class="ti-help-alt shortcuts-button" [popover]="shortcutsHelpPopover"></i>
   <popover-content #shortcutsHelpPopover title="Shortcuts" placement="bottom-left" [animation]="true">

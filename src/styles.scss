@@ -19,17 +19,19 @@ body {
   }
 
   .popover.popover-content {
-    background-color: rgba(117, 117, 117, 0.7);
+    position:absolute;
+    background-color: rgba(117, 117, 117, 0.6);
     border-radius: 5px;
 
-    .arrow {
-      display: none;
+    &.bs-popover-bottom-left .arrow::after, &.bs-popover-bottom-left .arrow::before {
+      border-bottom-color: rgb(117, 117, 117) !important;
+      opacity: 0.6;
     }
   }
 
   .shortcuts-button {
     position: absolute;
-    right: 30px;
+    right: 5px;
     top: 0px;
     color: $main-color;
     z-index: 9999;
@@ -60,7 +62,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
+    right: 30px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     transition: opacity ease-in-out 0.3s;
@@ -70,7 +72,7 @@ body {
     .drag-handler {
       -webkit-user-select: none;
       -webkit-app-region: drag;
-      cursor: grab;
+      cursor: move;
       color: $main-color;
     }
 
