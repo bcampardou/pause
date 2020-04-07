@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, globalShortcut, ipcMain } from 'electron';
+import { app, BrowserWindow, screen, globalShortcut } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as aspect from './ratio-handler';
@@ -23,13 +23,14 @@ function createWindow(): BrowserWindow {
     icon: './build/icon.ico',
     frame: false,
     show: true,
+    maximizable: false,
     webPreferences: {
       nodeIntegration: true,
       allowRunningInsecureContent: (serve) ? true : false,
     },
   });
   win.webContents.session.webRequest.onBeforeRequest({ urls: ['devtools://devtools/remote/*'] }, (details, callback) => { callback({ redirectURL: details.url.replace('devtools://devtools/remote/', 'https://chrome-devtools-frontend.appspot.com/') }); });
-  
+
 
   if (serve) {
     require('electron-reload')(__dirname, {
@@ -62,6 +63,15 @@ function createWindow(): BrowserWindow {
     // when you should delete the corresponding element.
     win = null;
   });
+
+  globalShortcut.register('CommandOrControl+Alt+P', () => {
+    if (win.isMinimized()) {
+      win.show();
+    } else {
+      win.minimize();
+    }
+  });
+
   return win;
 }
 app.commandLine.appendSwitch('high-dpi-support', 'true');

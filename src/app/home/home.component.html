@@ -22,6 +22,7 @@
   <popover-content #shortcutsHelpPopover title="Shortcuts" placement="bottom-left" [animation]="true">
     <ul class="shortcuts-list">
       <li><kbd>{{ctrlKey}}</kbd>+<kbd>F</kbd>: Toggle search mode</li>
+      <li><kbd>{{ctrlKey}}</kbd>+<kbd>{{altKey}}</kbd>+<kbd>F</kbd>: Show / Hide the player</li>
     </ul>
   </popover-content>
   <div plyr [ngClass]="{'search-mode-video': searchMode|async}" plyrTitle="Video" [plyrPlaysInline]="true"

@@ -29,7 +29,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public videos: Array<YouTubeSearchResult> = [];
   public isHover: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   plyrOptions = {
-    autoplay: true,
     youtube: {
       cc_lang_pref: 'en',
       controls: 0,
@@ -46,12 +45,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
   })
   searchInput: ElementRef;
   ctrlKey: string;
+  altKey: string;
 
   constructor(private youtubeService: YouTubeSearchService,
     private stateService: StateService,
     private zone: NgZone) { 
       this.isHover = this.stateService.isApplicationPointed$;
       this.ctrlKey = this.stateService.isMac ? 'Cmd' : 'Ctrl';
+      this.altKey = this.stateService.isMac ? 'Option' : 'Alt';
     }
 
   ngOnInit(): void {
@@ -102,7 +103,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   initPlayer($event: Plyr) {
-    $event.autoplay = true;
     this.player = $event;
     this.player.play();
   }

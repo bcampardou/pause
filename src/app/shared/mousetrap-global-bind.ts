@@ -42,5 +42,4 @@ export function mousetrapGlobal (Mousetrap) {
         _globalCallbacks[keys] = true;
     };
     return Mousetrap;
-    // Mousetrap.init();
 };
